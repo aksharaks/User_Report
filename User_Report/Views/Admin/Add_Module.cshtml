@@ -1,0 +1,265 @@
+﻿
+@{
+    ViewBag.Title = "Add_Module";
+    Layout = "~/Views/Shared/Master_layout.cshtml";
+}
+@model List<User_Report.Models.ListModule>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Module</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+/*
+        table {
+            margin: 0 auto;
+           width: 45%; 
+        }
+    
+
+*/
+
+
+            table a {
+                pointer-events: none;
+            }
+
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            font-weight: bolder;
+        }
+
+        th {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: firebrick;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            /*font-size: .8vw;*/
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        /* Space after form and table */
+        .container-fluid.card {
+            margin-bottom: 20px;
+
+           margin-top: 40px;
+        }
+
+        .webgrid-table {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        #pagination-container {
+            margin-top: 10px;
+        }
+
+        #first-page-btn, #prev-btn, #next-btn, #last-page-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 2px 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            #first-page-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+
+
+    <script>
+                function confirmSubmission() {
+                    return confirm("Do you want to submit?");
+                }
+    </script>
+</head>
+<body>
+    
+
+    <div class="container-fluid mt-5 card p-5" style="height:auto;">
+
+        <h5 style="text-align:left;">Add Module</h5>
+
+        <form class="row col" action="" method="post" onsubmit="return confirmSubmission()">
+            @*<div class="col-md-2"></div>*@
+            <div class="col-md-1"></div>
+            <div class="col-md-3 ">
+                <label for="validationDefault01" class="form-label">Module Name</label>
+                <input type="text" class="form-control text-capitalize" id="validationDefault01" name="module_name" required>
+            </div>
+            <div class="col-md-4">
+                <label for="validationDefault03" class="form-label">Module Description</label>
+                <textarea class="form-control" id="validationDefault03" name="module_description" required></textarea>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-75" formaction="moduleSave" type="submit">Submit</button>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-75" formaction="clear" type="reset">clear</button>
+            </div>
+
+
+
+        </form>
+
+
+        @if (Model != null && Model.Any())
+        {
+            <table id="bootstrap-data-table" border="1" class="webgrid-table overflow-x-scroll mb-auto pb-5">
+
+                <thead>
+                    <tr>
+
+                        <th> SI No</th>
+                        <th>Module Name</th>
+                        <th>Description</th>
+                        @*<th>Created by</th>*@
+                        <th>Created date</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int serialNumber = 1;
+                    }
+
+
+
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@serialNumber</td>
+
+                            <td>@item.module_name</td>
+                            <td>@item.module_description</td>
+                            @*<td>@item.created_by</td>*@
+                            <td>@item.created_date</td>
+
+
+                        </tr>
+                        serialNumber++;
+                    }
+
+
+                </tbody>
+            </table>
+
+
+
+
+
+
+
+
+
+            <!-- Pagination buttons -->
+            <div id="pagination-container">
+                <button id="first-page-btn">First Page</button>
+                <button id="prev-btn">Previous</button>
+                <span id="page-num" class="text-primary fw-bold text-capitalize" style="font-family:Dubai;"></span>
+                <button id="next-btn">Next</button>
+                <button id="last-page-btn">Last Page</button>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var table = document.querySelector('.webgrid-table');
+                    var rows = table.tBodies[0].rows;
+                    var rowsPerPage = 10; // Set the number of rows per page
+                    var currentPage = 1;
+
+                    function showPage(page) {
+                        var start = (page - 1) * rowsPerPage;
+                        var end = start + rowsPerPage;
+
+                        for (var i = 0; i < rows.length; i++) {
+                            rows[i].style.display = (i >= start && i < end) ? '' : 'none';
+                        }
+
+                        document.getElementById('page-num').textContent = 'Page ' + page;
+                    }
+
+                    function firstPage() {
+                        currentPage = 1;
+                        showPage(currentPage);
+                    }
+
+                    function prevPage() {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            showPage(currentPage);
+                        }
+                    }
+
+                    function nextPage() {
+                        if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+                            currentPage++;
+                            showPage(currentPage);
+                        }
+                    }
+
+                    function lastPage() {
+                        currentPage = Math.ceil(rows.length / rowsPerPage);
+                        showPage(currentPage);
+                    }
+
+                    document.getElementById('first-page-btn').addEventListener('click', firstPage);
+                    document.getElementById('prev-btn').addEventListener('click', prevPage);
+                    document.getElementById('next-btn').addEventListener('click', nextPage);
+                    document.getElementById('last-page-btn').addEventListener('click', lastPage);
+
+                    // Initial display
+                    showPage(currentPage);
+                });
+            </script>
+
+
+
+
+
+
+        }
+        else
+        {
+            <div style="text-align: center;">
+
+                <p>No data available.</p>
+
+            </div>
+
+
+        }
+    </div>
+
+  
+
+
+    </body>
+</html>

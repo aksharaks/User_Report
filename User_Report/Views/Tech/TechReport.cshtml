@@ -1,0 +1,211 @@
+﻿
+@{
+    ViewBag.Title = "TechReport";
+    Layout = "~/Views/Shared/Tech_Layout.cshtml";
+}
+
+
+
+@model List<User_Report.Models.AssignReport>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
+
+    <style>
+        /*
+                table {
+                    margin: 0 auto;
+                   width: 45%;
+                }
+
+
+        */
+        
+
+
+
+        table a {
+            pointer-events: none;
+            /*margin-top: 40px;*/
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            font-weight: bolder;
+        }
+
+        th {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: firebrick;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            /*font-size: .8vw;*/
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        /* Space after form and table */
+        .container-fluid.card {
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .webgrid-table {
+            margin-top: 100px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        #pagination-container {
+            margin-top: 10px;
+        }
+
+        #first-page-btn, #prev-btn, #next-btn, #last-page-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 2px 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            #first-page-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+
+
+
+</head>
+<body>
+
+
+
+    <div class="container-fluid card mt-5 p-5">
+        <form method="post" action="">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="fromDate" class="form-label">From Date</label>
+                    <input type="date" class="form-control" id="fromDate" name="fromDate" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="toDate" class="form-label">To Date</label>
+                    <input type="date" class="form-control" id="toDate" name="toDate" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    @*<button type="submit" id="submit-button" class="btn btn-primary" >Submit </button>*@
+                    <button type="submit" id="submit-button" class="btn btn-primary">Submit </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
+    <div id="partialViewContainer">
+
+    </div>
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        document.getElementById("submit-button").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var fromDate = document.getElementById("fromDate").value;
+            var toDate = document.getElementById("toDate").value;
+
+            var today = new Date().toISOString().split('T')[0];
+
+            if (fromDate > today) {
+                alert("From Date cannot be in the future.");
+                return;
+            }
+
+            if (toDate > today) {
+                alert("To Date cannot be in the future.");
+                return;
+            }
+
+            if (fromDate > toDate) {
+                alert("From Date cannot be greater than To Date.");
+                return;
+            }
+            var url = '@Url.Action("SubmitForm", "Tech")';
+
+            // Construct the URL to send the AJAX request to your controller
+            // var url = '/Tech/SubmitForm';
+
+
+            // Make the AJAX request
+            $.ajax({
+                url: url,
+                type: 'GET', // Change to 'POST' if your endpoint expects a POST request
+                data: {
+                    fromDate: fromDate,
+                    toDate: toDate
+                },
+                success: function (response) {
+                    // Load the response (partial view) into the specified container
+                    $('#partialViewContainer').html(response);
+                },
+                error: function (xhr, status, error) {
+                    // Handle any errors that occur during the request
+                    console.error('An error occurred:', error);
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+    <script>
+        function formatDate(dateString) {
+            var date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return ''; // Return an empty string for invalid dates
+            }
+            var day = date.getDate();
+            var month = date.toLocaleString('default', { month: 'short' });
+            var year = date.getFullYear();
+
+            return day + '-' + month + '-' + year;
+        }
+    </script>
+
+
+
+</body>
+</html>

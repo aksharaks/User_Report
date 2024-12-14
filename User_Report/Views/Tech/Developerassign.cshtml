@@ -1,0 +1,513 @@
+﻿
+@{
+    ViewBag.Title = "Developerassign";
+    Layout = "~/Views/Shared/Tech_layout.cshtml";
+
+}
+
+
+
+
+@model List<User_Report.Models.AssignReport>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Module</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="path/to/custom-styles.css" rel="stylesheet">
+
+
+    <script>
+        function confirmSubmission() {
+            return confirm("Do you want to assign?");
+        }
+
+
+        function clearForm() {
+            document.getElementById("userComplaintForm").reset();
+            var elements = document.getElementById("userComplaintForm").elements;
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type === "select-one") {
+                    elements[i].selectedIndex = 0;
+                } else if (elements[i].type === "textarea" || elements[i].type === "text") {
+                    elements[i].value = '';
+                }
+            }
+            return false; // Prevent form submission
+        }
+    </script>
+
+    <style>
+
+
+        .form-control[disabled] {
+            background-color: white !important;
+            color: rgb(0, 0, 0) !important; /* Solid black */
+        }
+    </style>
+
+    <style>
+        /*
+                table {
+                    margin: 0 auto;
+                   width: 45%;
+                }
+
+
+        */
+
+
+        table a {
+            pointer-events: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            font-weight: bolder;
+        }
+
+        th {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: firebrick;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            /*font-size: .8vw;*/
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        /* Space after form and table */
+        .container-fluid.card {
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .webgrid-table {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        #pagination-container {
+            margin-top: 10px;
+        }
+
+        #first-page-btn, #prev-btn, #next-btn, #last-page-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 2px 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            #first-page-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+    <div class="container-fluid mt-5 card p-5">
+        <h5 style="text-align:left;" class="pb-4"></h5>
+
+
+
+        <form class="row g-3" action="" method="post">
+            <div class="container-fluid">
+                <div class="row">
+
+
+                    <div class="col-md-4">
+                        <label for="validationDefault01" class="form-label">Ticket Number</label>
+                        <select class="form-control" id="" onchange="SelectedIndexChanged()" name="compliant_id" required @Html.DropDownList("tickets", "---*Select Ticket No*---")
+                                </select>
+                    </div>
+
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" formaction="Ticket_search" type="submit">search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+
+
+    <form method="post">
+
+
+
+        <div class="container-fluid mt-5 card p-5">
+
+            <div class="row">
+
+
+
+                <div class="col-md-2">
+                    <label for="validationDefault01" class="form-label">Ticket Number</label>
+                    <input type="text" class="form-control text-capitalize" id="" name="compliant_id" required disabled value="@TempData["complaint_id"]" style="background-color: white !important;">
+
+                </div>
+
+
+                <div class="col-md-3 ">
+                    <label for="validationDefault01" class="form-label">Module</label>
+                    <input type="text" class="form-control text-capitalize" id="validationDefault01" name="module_name" required disabled value="@TempData["module_name"]" style="background-color: white !important;">
+
+                </div>
+
+                <div class="col-md-5">
+                    <label for="validationDefault02" class="form-label">complaint title</label>
+                    <input type="text" class="form-control text-capitalize" id="validationDefault02" name="compliantname" required disabled value="@TempData["compliant_name"]" style="background-color: white !important;">
+
+                </div>
+                <div class="col-md-2">
+                    <label for="validationDefault02" class="form-label">priority</label>
+                    <input type="text" class="form-control text-capitalize" id="validationDefault02" name="priority" required disabled value="@TempData["priority"]" style="background-color: white !important;">
+
+                </div>
+
+                <div class="col-md-6">
+                    <label for="validationDefault03" class="form-label">Compliant Description</label>
+                    <textarea class="form-control" id="validationDefault03" name="descriptions" rows="4"
+                              required>@TempData["description"]</textarea>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <label for="validationDefault04" class="form-label">Requested Date</label>
+                    <input type="text" class="form-control text-capitalize" id="validationDefault04" name="created_date" required disabled value="@TempData["date"]" style="background-color: white !important;">
+                </div>
+
+
+
+
+
+
+
+                <div class="col-md-3">
+                    <label for="validationDefault05" class="form-label">Developer</label>
+                    <select class="form-control" id="" onchange="SelectedIndexChanged()" name="developer_id" required @Html.DropDownList("developers", "---*Select Developer*---")
+                </div>
+
+
+
+
+                <div class="row pt-2">
+
+
+                    <div class="col-md-8 d-flex align-items-end"></div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" formaction="Ticket_Assign" type="submit" onsubmit="return confirmSubmission()">Assign</button>
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" onclick="return clearForm()">Clear</button>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+    @if (Model != null && Model.Any())
+    {
+        <table id="bootstrap-data-table" border="1" class="webgrid-table overflow-x-scroll mb-auto pb-5">
+
+            <thead>
+                <tr>
+
+
+
+
+
+
+                    <th> SI No</th>
+                    <th>Ticket No</th>
+                    <th>Compliant Name</th>
+                    <th>Description</th>
+                    <th>Module Name </th>
+                    <th>Priority</th>
+                    <th>Requested Date</th>
+                    <th>Developer</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int serialNumber = 1;
+                }
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@serialNumber</td>
+
+                        <td>@item.compliant_id</td>
+                        <td>@item.compliantname</td>
+                        <td>@item.descriptions</td>
+                        <td>@item.module_name</td>
+                        <td>@item.priority</td>
+                        <td>@item.created_date</td>
+                        <td>@item.emp_name</td>
+                        <td>@item.status</td>
+                    </tr>
+                    serialNumber++;
+                }
+
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+
+        <!-- Pagination buttons -->
+        <div id="pagination-container">
+            <button id="first-page-btn">First Page</button>
+            <button id="prev-btn">Previous</button>
+            <span id="page-num" class="text-primary fw-bold text-capitalize" style="font-family:Dubai;"></span>
+            <button id="next-btn">Next</button>
+            <button id="last-page-btn">Last Page</button>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var table = document.querySelector('.webgrid-table');
+                var rows = table.tBodies[0].rows;
+                var rowsPerPage = 5; // Set the number of rows per page
+                var currentPage = 1;
+
+                function showPage(page) {
+                    var start = (page - 1) * rowsPerPage;
+                    var end = start + rowsPerPage;
+
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].style.display = (i >= start && i < end) ? '' : 'none';
+                    }
+
+                    document.getElementById('page-num').textContent = 'Page ' + page;
+                }
+
+                function firstPage() {
+                    currentPage = 1;
+                    showPage(currentPage);
+                }
+
+                function prevPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                    }
+                }
+
+                function nextPage() {
+                    if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+                        currentPage++;
+                        showPage(currentPage);
+                    }
+                }
+
+                function lastPage() {
+                    currentPage = Math.ceil(rows.length / rowsPerPage);
+                    showPage(currentPage);
+                }
+
+                document.getElementById('first-page-btn').addEventListener('click', firstPage);
+                document.getElementById('prev-btn').addEventListener('click', prevPage);
+                document.getElementById('next-btn').addEventListener('click', nextPage);
+                document.getElementById('last-page-btn').addEventListener('click', lastPage);
+
+                // Initial display
+                showPage(currentPage);
+            });
+        </script>
+
+
+
+
+
+
+    }
+    else
+    {
+        <div style="text-align: center;">
+
+            <p>No data available.</p>
+
+        </div>
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    @if (@TempData["Success"] == "Success")
+    {
+        if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+
+          Swal.fire({
+              /*title: 'File Upload',*/
+              text: "@ViewBag.Message",
+              icon: 'success',
+              // You can change the icon (success, error, warning, info)
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'OK'
+          });
+      });
+            </script>
+        }
+    }
+
+
+    @if (@TempData["Success"] == "Warning")
+    {
+        if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
+       document.addEventListener('DOMContentLoaded', function () {
+
+           Swal.fire({
+               /*title: 'File Upload',*/
+               text: "@ViewBag.Message",
+               icon: 'warning',
+               // You can change the icon (success, error, warning, info)
+               confirmButtonColor: '#3085d6',
+               confirmButtonText: 'OK'
+           });
+       });
+            </script>
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

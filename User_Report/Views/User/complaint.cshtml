@@ -1,0 +1,522 @@
+﻿
+@{
+    ViewBag.Title = "complaint";
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+
+
+
+@model List<User_Report.Models.listcompliant>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
+
+    <script>
+        function confirmSubmission() {
+            return confirm("Do you want to save?");
+        }
+    </script>
+    <script>
+        function confirmdelete() {
+            return confirm("Do you want to Delete Ticket?");
+        }
+    </script>
+    <style>
+        /*
+                table {
+                    margin: 0 auto;
+                   width: 45%;
+                }
+
+
+        */
+
+
+        /*   table a {
+            pointer-events: none;
+        }*/
+        /*.button-group {
+            display: flex;
+            gap: 5px;*/ /* Adjust the spacing between buttons as needed */
+        /*}*/
+
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            font-weight: bolder;
+        }
+
+        th {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: firebrick;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            /*font-size: .8vw;*/
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        /* Space after form and table */
+        .container-fluid.card {
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .webgrid-table {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        #pagination-container {
+            margin-top: 10px;
+        }
+
+        #first-page-btn, #prev-btn, #next-btn, #last-page-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 2px 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            #first-page-btn:hover {
+                background-color: #45a049;
+            }
+
+        .button-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm-custom {
+            padding: 2px 6px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .disabled {
+            opacity: 0.6;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+    <div class="container-fluid mt-5 card p-5">
+        <h5 style="text-align:left;" class="pb-4">Compliant</h5>
+
+
+
+        <form class="row g-3" action="" method="post" onsubmit="return confirmSubmission()">
+            <div class="container-fluid">
+                <div class="row">
+
+
+                    <div class="col-md-4">
+                        <label for="validationDefault01" class="form-label">Module name</label>
+                        <select class="form-control" id="" onchange="SelectedIndexChanged()" name="module_name" required @Html.DropDownList("modulenames", "---*Select Module Name*---")
+                    </div>
+
+                    <div class="col-md-4 ">
+                        <label for="validationDefault01" class="form-label">Complaint title</label>
+                        <input type="text" class="form-control text-capitalize" id="validationDefault01" name="compliantname" required>
+
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+
+                        <label class="form-label">Priority</label>
+                        <div class="d-flex">
+                            <div class="form-check mr-3">
+                                <input class="form-check-input" type="radio" name="priority" id="highPriority" value="1" required>
+                                <label class="form-check-label" for="highPriority">
+                                    High
+                                </label>
+                            </div>
+                            <div class="form-check mr-3">
+                                <input class="form-check-input" type="radio" name="priority" id="mediumPriority" value="2" required>
+                                <label class="form-check-label" for="mediumPriority">
+                                    Medium
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="priority" id="lowPriority" value="3" required>
+                                <label class="form-check-label" for="lowPriority">
+                                    Low
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row align-items-end">
+
+                    <div class="col-md-8">
+                        <label for="validationDefault02" class="form-label">Compliant Description</label>
+                        <textarea class="form-control" id="validationDefault03" name="descriptions" required></textarea>
+                    </div>
+
+
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary btn-sm w-100" formaction="compliantsave" type="submit">Submit</button>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary btn-sm w-100" formaction="clear" type="reset">clear</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    @if (Model != null && Model.Any())
+    {
+        <table id="bootstrap-data-table" border="1" class="webgrid-table overflow-x-scroll mb-auto p-5">
+
+            <thead>
+                <tr>
+
+                    <th>Serial No</th>
+                    <th>Ticket No</th>
+                    <th>Module Name</th>
+                    <th>compliant title</th>
+                    <th>priority</th>
+                    <th>Description</th>
+                    <th>Requested by</th>
+                    @*<th>Created by</th>*@
+                    <th>Created date</th>
+                    <th>status</th>
+                    <th>Developer</th>
+                    <th>Resubmition</th>
+                    <th>comment</th>
+                    <th>  </th>
+
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int serialNumber = 1;
+                }
+
+
+
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@serialNumber</td>
+                        <td><a href="@Url.Action("TicketHistory","User")" style="color: green;">@item.compliant_id</a></td>
+
+
+                        <td>@item.module_name</td>
+                        <td>@item.compliantname</td>
+                        <td>@item.priority</td>
+                        <td>@item.descriptions</td>
+                        <td>@item.created_by</td>
+                        <td>@item.created_date</td>
+                        <td>@item.status</td>
+                        <td>@item.developer_name</td>
+                        @*<td>>@item.comments</td>*@
+
+                        <td>
+                            @*@if (item.status == 4)
+                                {*@
+                            @*@if (int.TryParse(item.status, out int status) && status == 4)
+
+
+
+                                {*@
+                            @*<div class="button-group">*@
+
+                            <button class="btn btn-sm" id="edit-button-@item.compliant_id" onclick="editTicket(@item.compliant_id)"><i style="font-size:20px; color:cornflowerblue;" class="fas fa-pen-to-square text-center"></i></button>
+                            @*}*@
+                            @*<button class="btn btn-sm btn-sm-custom" onclick="deleteTicket(@item.compliant_id)">
+                                    <i style="font-size:14px; color:red;" class="fas fa-trash text-center"></i>
+                                </button>
+                                <button class="btn btn-sm btn-sm-custom" onclick="completeTicket(@item.compliant_id)">
+                                    <i style="font-size:14px; color:green;" class="fas fa-check text-center"></i>
+                                </button>*@
+                            @*</div>*@
+
+
+                        </td>
+                        <td>@item.comments </td>
+                        <td>
+
+                            <div class="button-group">
+                                <button class="btn btn-sm btn-sm-custom" title="Delete" onclick="confirmDelete(@item.compliant_id)">
+                                    <i style="font-size:20px; color:red;" class="fas fa-trash text-center"></i>
+                                </button>
+                                <button class="btn btn-sm btn-sm-custom" title="Close Ticket" onclick="ConfirmCloseTicket(@item.compliant_id)">
+                                    <i style="font-size:20px; color:green;" class="fas fa-check text-center"></i>
+                                </button>
+                            </div>
+
+
+                        </td>
+
+
+
+                    </tr>
+                    serialNumber++;
+                }
+
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+
+        <!-- Pagination buttons -->
+        <div id="pagination-container">
+            <button id="first-page-btn">First Page</button>
+            <button id="prev-btn">Previous</button>
+            <span id="page-num" class="text-primary fw-bold text-capitalize" style="font-family:Dubai;"></span>
+            <button id="next-btn">Next</button>
+            <button id="last-page-btn">Last Page</button>
+        </div>
+
+
+        <script type="text/javascript">
+    function editTicket(TicketNo) {
+        window.location.href = '@Url.Action("EditTicket", "User")' + '?compliant_id=' + TicketNo;
+    }
+        </script>
+
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var table = document.querySelector('.webgrid-table');
+                var rows = table.tBodies[0].rows;
+                var rowsPerPage = 10; // Set the number of rows per page
+                var currentPage = 1;
+
+                function showPage(page) {
+                    var start = (page - 1) * rowsPerPage;
+                    var end = start + rowsPerPage;
+
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].style.display = (i >= start && i < end) ? '' : 'none';
+                    }
+
+                    document.getElementById('page-num').textContent = 'Page ' + page;
+                }
+
+                function firstPage() {
+                    currentPage = 1;
+                    showPage(currentPage);
+                }
+
+                function prevPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                    }
+                }
+
+                function nextPage() {
+                    if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+                        currentPage++;
+                        showPage(currentPage);
+                    }
+                }
+
+                function lastPage() {
+                    currentPage = Math.ceil(rows.length / rowsPerPage);
+                    showPage(currentPage);
+                }
+
+                document.getElementById('first-page-btn').addEventListener('click', firstPage);
+                document.getElementById('prev-btn').addEventListener('click', prevPage);
+                document.getElementById('next-btn').addEventListener('click', nextPage);
+                document.getElementById('last-page-btn').addEventListener('click', lastPage);
+
+                // Initial display
+                showPage(currentPage);
+            });
+        </script>
+
+
+
+
+
+
+    }
+    else
+    {
+        <div style="text-align: center;">
+
+            <p>No data available.</p>
+
+        </div>
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+             function ConfirmCloseTicket(ticketId) {
+            if (confirm("Do you want to close the ticket?")) {
+                // If the user confirms, proceed with the deletion
+                closeTicket(ticketId);
+            }
+            // If the user cancels, do nothing
+        }
+
+              function closeTicket(ticketId) {
+            // Logic to delete the ticket goes here
+            window.location.href = '@Url.Action("CloseTicket", "User")' + '?compliant_id=' + ticketId;
+        }
+          </script>
+@*<script>
+    function ConfirmCloseTicket(ticketId) {
+        if (confirm("Do you want to close the ticket?")) {
+            // Find the edit button using the ticket ID
+            var editButton = document.getElementById('edit-button-' + ticketId);
+
+            // Debugging: Check if the button is found
+            console.log('Edit Button:', editButton);
+
+            if (editButton) {
+                // Disable the edit button
+                editButton.disabled = true;
+
+                // Apply .disabled class for styling
+                editButton.classList.add('disabled');
+
+                // Alternatively, directly set styles if class isn't working
+                editButton.style.opacity = "0.6";
+                editButton.style.pointerEvents = "none";
+                editButton.style.cursor = "not-allowed";
+            } else {
+                console.error('Edit button not found for ticketId:', ticketId);
+            }
+
+            // Proceed to close the ticket
+            closeTicket(ticketId);
+        }
+    }
+
+    function closeTicket(ticketId) {
+        window.location.href = '@Url.Action("CloseTicket", "User")' + '?compliant_id=' + ticketId;
+    }
+</script>*@
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    @if (@TempData["Success"] == "Success")
+    {
+        if (ViewBag.Message != null)
+        {
+            <script type="text/javascript">
+          document.addEventListener('DOMContentLoaded', function () {
+
+              Swal.fire({
+                  /*title: 'File Upload',*/
+                  text: "@ViewBag.Message",
+                  icon: 'success',
+                  // You can change the icon (success, error, warning, info)
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'OK'
+              });
+          });
+            </script>
+        }
+    }
+
+
+
+    <script type="text/javascript">
+        function confirmDelete(ticketId) {
+        if (confirm("Do you want to delete the ticket?")) {
+            // If the user confirms, proceed with the deletion
+            deleteTicket(ticketId);
+        }
+        // If the user cancels, do nothing
+    }
+
+        function deleteTicket(ticketId) {
+        // Logic to delete the ticket goes here
+        window.location.href = '@Url.Action("DeleteTicket", "User")' + '?compliant_id=' + ticketId;
+    }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

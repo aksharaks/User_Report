@@ -1,0 +1,262 @@
+﻿
+@{
+    ViewBag.Title = "TicketHistory";
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+
+<h2>TicketHistory</h2>
+
+@model List<User_Report.Models.tickethistory>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
+
+    <style>
+        /*
+                table {
+                    margin: 0 auto;
+                   width: 45%;
+                }
+
+
+        */
+        
+        h5 {
+            margin-bottom:40px;
+        }
+
+
+        table a {
+            pointer-events: none;
+            /*margin-top: 40px;*/
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            font-weight: bolder;
+        }
+
+        th {
+            text-decoration: none;
+            text-transform: uppercase;
+            color: firebrick;
+            font-weight: bold;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+            /*font-size: .8vw;*/
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        /* Space after form and table */
+        .container-fluid.card {
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .webgrid-table {
+            margin-top: 100px;
+            margin-bottom: 20px;
+        }
+
+
+
+
+        #pagination-container {
+            margin-top: 10px;
+        }
+
+        #first-page-btn, #prev-btn, #next-btn, #last-page-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 10px;
+            margin: 2px 0px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            #first-page-btn:hover {
+                background-color: #45a049;
+            }
+    </style>
+
+
+
+</head>
+
+<body>
+
+    <h5 style="text-align:left;">Ticket Details</h5>
+
+
+
+    @if (Model != null && Model.Any())
+    {
+        <table id="bootstrap-data-table" border="1" class="webgrid-table overflow-x-scroll mb-auto pb-5">
+
+            <thead>
+                <tr>
+
+                    <th> SI No</th>
+                    <th>Ticket no</th>
+                    <th>Compliant name</th>
+                    <th>Description</th>
+                    <th>Created date</th>
+                    <th>New issue</th>
+                    <th>resubmitted date</th>
+
+
+
+
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int serialNumber = 1;
+                }
+
+
+
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@serialNumber</td>
+
+                        <td>@item.compliant_id</td>
+                        <td>@item.compliantname</td>
+                        <td>@item.descriptions</td>
+                        <td>@item.created_date</td>
+                        <td>@item.comments</td>
+                        <td>@item.return_date</td>
+
+
+
+
+                    </tr>
+                    serialNumber++;
+                }
+
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+
+
+        <!-- Pagination buttons -->
+        <div id="pagination-container">
+            <button id="first-page-btn">First Page</button>
+            <button id="prev-btn">Previous</button>
+            <span id="page-num" class="text-primary fw-bold text-capitalize" style="font-family:Dubai;"></span>
+            <button id="next-btn">Next</button>
+            <button id="last-page-btn">Last Page</button>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var table = document.querySelector('.webgrid-table');
+                var rows = table.tBodies[0].rows;
+                var rowsPerPage = 10; // Set the number of rows per page
+                var currentPage = 1;
+
+                function showPage(page) {
+                    var start = (page - 1) * rowsPerPage;
+                    var end = start + rowsPerPage;
+
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].style.display = (i >= start && i < end) ? '' : 'none';
+                    }
+
+                    document.getElementById('page-num').textContent = 'Page ' + page;
+                }
+
+                function firstPage() {
+                    currentPage = 1;
+                    showPage(currentPage);
+                }
+
+                function prevPage() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                    }
+                }
+
+                function nextPage() {
+                    if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+                        currentPage++;
+                        showPage(currentPage);
+                    }
+                }
+
+                function lastPage() {
+                    currentPage = Math.ceil(rows.length / rowsPerPage);
+                    showPage(currentPage);
+                }
+
+                document.getElementById('first-page-btn').addEventListener('click', firstPage);
+                document.getElementById('prev-btn').addEventListener('click', prevPage);
+                document.getElementById('next-btn').addEventListener('click', nextPage);
+                document.getElementById('last-page-btn').addEventListener('click', lastPage);
+
+                // Initial display
+                showPage(currentPage);
+            });
+        </script>
+
+
+
+
+
+
+    }
+    else
+    {
+        <div style="text-align: center;">
+
+            <p>No data available.</p>
+
+        </div>
+
+
+    }
+    </div>
+
+
+
+
+</body>
+</html>
+
+
+
+
+

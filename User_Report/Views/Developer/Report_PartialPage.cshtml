@@ -1,0 +1,147 @@
+﻿
+@model List<User_Report.Models.TicketList>
+
+
+
+
+
+
+
+
+
+<head>
+
+
+</head>
+
+<body>
+    <div id="partialViewContainer">
+
+        @if (Model != null && Model.Any())
+        {
+            <table id="bootstrap-data-table" border="1" class="webgrid-table overflow-x-scroll mb-auto pb-5">
+
+                <thead>
+                    <tr>
+
+
+
+
+
+
+                        <th> SI No</th>
+                        <th>Ticket No</th>
+                        <th>Compliant Name</th>
+                        <th>Module Name </th>
+                        <th>Requested by</th>
+                        <th>Assign Date</th>
+                        <th>Status</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int serialNumber = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>@serialNumber</td>
+
+                            <td>@item.compliant_id</td>
+                            <td>@item.compliantname</td>
+                            <td>@item.module_name</td>
+                            <td>@item.created_by</td>
+                            <td>@item.assign_date</td>
+                            <td>@item.status</td>
+                            <td>@(item.start_date.HasValue ? item.start_date.Value.ToString("yyyy-MM-dd") : "No Action")</td>
+                            <td>@(item.end_date.HasValue ? item.end_date.Value.ToString("yyyy-MM-dd") : "No Action")</td>
+                        </tr>
+                        serialNumber++;
+                    }
+
+
+                </tbody>
+            </table>
+
+
+            <!-- Pagination buttons -->
+            <div id="pagination-container">
+                <button id="first-page-btn">First Page</button>
+                <button id="prev-btn">Previous</button>
+                <span id="page-num" class="text-primary fw-bold text-capitalize" style="font-family:Dubai;"></span>
+                <button id="next-btn">Next</button>
+                <button id="last-page-btn">Last Page</button>
+            </div>
+
+
+        }
+        else
+        {
+            <div style="text-align: center;">
+
+                <p>No data available.</p>
+
+            </div>
+
+
+        }
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var table = document.querySelector('.webgrid-table');
+            var rows = table.tBodies[0].rows;
+            var rowsPerPage = 10; // Set the number of rows per page
+            var currentPage = 1;
+
+            function showPage(page) {
+                var start = (page - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i].style.display = (i >= start && i < end) ? '' : 'none';
+                }
+
+                document.getElementById('page-num').textContent = 'Page ' + page;
+            }
+
+            function firstPage() {
+                currentPage = 1;
+                showPage(currentPage);
+            }
+
+            function prevPage() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            }
+
+            function nextPage() {
+                if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            }
+
+            function lastPage() {
+                currentPage = Math.ceil(rows.length / rowsPerPage);
+                showPage(currentPage);
+            }
+
+            document.getElementById('first-page-btn').addEventListener('click', firstPage);
+            document.getElementById('prev-btn').addEventListener('click', prevPage);
+            document.getElementById('next-btn').addEventListener('click', nextPage);
+            document.getElementById('last-page-btn').addEventListener('click', lastPage);
+
+            // Initial display
+            showPage(currentPage);
+        });
+    </script>
+
+</body>
